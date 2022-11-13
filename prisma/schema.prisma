@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tag {
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  ticket Ticket[]
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  fileUrl   String   @unique
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  ticketId  Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  type      FileType @default(IMAGE)
+}
+
+model Project {
+  id              Int      @id @default(autoincrement())
+  title           String
+  description     String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  projectManger   User     @relation(fields: [projectMangerId], references: [id], onDelete: Cascade)
+  projectMangerId Int      @unique
+  tickets         Ticket[]
+  isClosed        Boolean  @default(false)
+}
+
+model Ticket {
+  id          Int    @id @default(autoincrement())
+  title       String
+  description String
+  tags        Tag[]
+  files       File[]
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   Int 
+  developer   User   @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  developerId Int 
+  createdAt   DateTime @default(now())
+  completedAt DateTime
+  type        TicketTypes @default(FEATURE)
+  priority    TicketPriority @default(MEDIUM)
+  status      TicketStatus @default(NEW)
+  comments    Comment[]
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  lastName  String
+  firstName String
+  password  String
+  comments  Comment[]
+  role      Roles     @default(USER)
+  project   Project? @relation()
+  projectId Int?
+  files     File[]
+  ticket    Ticket[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  userId    Int
+  ticketId  Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ticket    Ticket  @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+}
+
+enum Roles {
+  ADMIN
+  PROJECT_MANAGER
+  DEVELOPER
+  USER
+}
+
+enum TicketTypes {
+  FEATURE
+  BUG
+}
+
+
+enum FileType {
+  IMAGE
+  DOCUMENT
+}
+
+enum TicketPriority {
+  LOW 
+  MEDIUM 
+  HIGH
+}
+
+enum TicketStatus {
+  NEW
+  IN_PROGRESS 
+  RESOLVED
+  CLOSED
+}
