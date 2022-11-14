@@ -19,11 +19,16 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import Footer from './Footer';
-
-const drawerWidth = 240;
+import SearchIcon from '@mui/icons-material/Search';
+import Button from '@mui/material/Button';
+import InputBase from '@mui/material/InputBase';
+import useGetUser from '../hooks/useGetUser';
+import Link from 'next/link';
+import Image from 'next/image';
+import DesignServicesIcon from '@mui/icons-material/DesignServices';
 
 const openedMixin = (theme: Theme): CSSObject => ({
-  width: drawerWidth,
+  width: 240,
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
@@ -43,15 +48,6 @@ const closedMixin = (theme: Theme): CSSObject => ({
   },
 });
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-}));
-
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
@@ -65,8 +61,8 @@ const AppBar = styled(MuiAppBar, {
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: 240,
+    width: `calc(100% - 240px)`,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -74,9 +70,10 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
+
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
-    width: drawerWidth,
+    width: 240,
     flexShrink: 0,
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',
@@ -91,9 +88,11 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-export default function Main({children}: any) {
+
+export default function Main({ children }: any) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [user] = useGetUser()
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -103,99 +102,126 @@ export default function Main({children}: any) {
     setOpen(false);
   };
 
+  const handelLogout = () => {
+
+  }
+
   return (
     <>
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
+      <Box className="flex">
+        <CssBaseline />
+
+        <AppBar className="fixed" open={open}>
+          <Toolbar className="flex flex-row justify-between items-center ">
+            <Box className="flex flex-row items-center">
+              <IconButton onClick={handleDrawerOpen}
+                className={`ml-[-10px] text-inherit none mr-[5] ${open && 'hidden'}`} >
+                <MenuIcon />
+              </IconButton>
+
+              <Link href="/" className='ml-4'>
+                <Image src='/images/logo.svg' width={40} height={30} alt="logo bug"></Image>
+              </Link>
+            </Box>
+            <Box className="flex flex-row items-center">
 
 
+              <div className="relative rounded-md mr-2 hover:bg-white/[0.25] ml-0 w-full sm:ml-2 sm:w-auto bg-white/[0.15]">
 
-      <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: 'none' }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
-          </Typography>
-        </Toolbar>
-      </AppBar>
+                <div className="px-4 h-full absolute pointer-events-none flex items-center justify-center">
+                  <SearchIcon />
+                </div>
+                <InputBase
+                  placeholder="Search…"
+                  inputProps={{ 'aria-label': 'search', 'className': "ml-5 bg-inherit py-2 pr-2 pl-4 w-full sm:w-['12ch'] focus:w-['20ch']" }}
+                />
+              </div>
 
+              {user ? (
+                <Button onClick={handelLogout} className="bg-white text-blue-600 hover:bg-slate-100 hover:text-blue-500 ">
+                  Logout
+                </Button>
+              ) : (
+                <Button className="bg-white text-blue-600 hover:bg-slate-100 hover:text-blue-500 ">
+                  <Link href='/login'>Login</Link>
+                </Button>
+              )}
 
+            </Box>
+          </Toolbar>
 
+        </AppBar>
 
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+        <Drawer variant="permanent" open={open}>
+          <div className='flex items-center justify-end px-3 mb-4'>
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
+          </div>
+          <Divider />
+          <List>
+
+            <ListItem className="p-0 block" >
               <ListItemButton
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                }} >
+                <Link href='/admin/create-project'>
+                  <ListItemIcon
+                    className={`min-w-[0] mr-${open ? '["3px"]' : "auto"} justify-center`} >
+                    <DesignServicesIcon />
+                  </ListItemIcon>
+                </Link>
+                <ListItemText primary="Create Project" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
+
+            {['Starred', 'Send email', 'Drafts'].map((text, index) => (
+              <ListItem key={index} className="p-0 block" >
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
+                  }} >
+                  <ListItemIcon
+                    className={`min-w-[0] mr-${open ? '["3px"]' : "auto"} justify-center`} >
+                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <List>
+            {['All mail', 'Trash', 'Spam'].map((text, index) => (
+              <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
                   }}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-        {children}
+                  <ListItemIcon
+                    className={`min-w-[0] mr-${open ? '["3px"]' : "auto"} justify-center`} >
+                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
+        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <div className='flex items-center justify-end px-3 mb-4'></div>
+          {children}
+        </Box>
       </Box>
-    </Box>
-    <Footer />
+      <Footer />
     </>
   );
-}
+};

@@ -16,11 +16,13 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <NextNProgress />
       {isBrowser ? (
-        <>
+        <div className="background">
         <Main>
+          <main className="min-h-[100vh] flex justify-center items-center"> 
           <Component {...pageProps} />
+          </main>
         </Main>
-        </>
+        </div>
       ) : (
         <CircularProgress />
       )}

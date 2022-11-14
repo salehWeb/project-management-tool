@@ -63,7 +63,7 @@ const SingUp: NextPage = () => {
     <Container component="main" className='w-full h-full mt-20 flex justify-center items-center'>
       <CssBaseline />
       <Box
-        className='rounded-md bg-white shadow-lg w-[90%] sm:w-[80%] md:w-[60%] lg:w-[40%] p-8 h-full flex justify-center items-center flex-col mt-2'>
+        className='rounded-md bg-slate-100 shadow-lg w-[90%] sm:w-[80%] md:w-[60%] lg:w-[40%] p-8 h-full flex justify-center items-center flex-col mt-2'>
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           <LockOutlinedIcon />
         </Avatar>

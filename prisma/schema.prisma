@@ -91,7 +91,6 @@ enum TicketTypes {
   BUG
 }
 
-
 enum FileType {
   IMAGE
   DOCUMENT
@@ -107,5 +106,6 @@ enum TicketStatus {
   NEW
   IN_PROGRESS 
   RESOLVED
+  REVIEWING
   CLOSED
 }
