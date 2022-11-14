@@ -26,6 +26,7 @@ import useGetUser from '../hooks/useGetUser';
 import Link from 'next/link';
 import Image from 'next/image';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: 240,
@@ -178,7 +179,24 @@ export default function Main({ children }: any) {
               </ListItemButton>
             </ListItem>
 
-            {['Starred', 'Send email', 'Drafts'].map((text, index) => (
+            <ListItem className="p-0 block" >
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }} >
+                <Link href='/admin/mange-users-roles'>
+                  <ListItemIcon
+                    className={`min-w-[0] mr-${open ? '["3px"]' : "auto"} justify-center`} >
+                    <AdminPanelSettingsIcon />
+                  </ListItemIcon>
+                </Link>
+                <ListItemText primary="Mange Users Roles" sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+
+            {['Send email', 'Drafts'].map((text, index) => (
               <ListItem key={index} className="p-0 block" >
                 <ListItemButton
                   sx={{

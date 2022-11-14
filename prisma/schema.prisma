@@ -11,11 +11,14 @@ model Tag {
   id      Int       @id @default(autoincrement())
   name    String    @unique
   ticket Ticket[]
+  color  String
+  isDark Boolean 
 }
 
 model File {
   id        Int      @id @default(autoincrement())
   fileUrl   String   @unique
+  name      String 
   ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
   ticketId  Int
   createdAt DateTime @default(now())
@@ -31,7 +34,7 @@ model Project {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   projectManger   User     @relation(fields: [projectMangerId], references: [id], onDelete: Cascade)
-  projectMangerId Int      @unique
+  projectMangerId Int      
   tickets         Ticket[]
   isClosed        Boolean  @default(false)
 }
@@ -52,6 +55,7 @@ model Ticket {
   priority    TicketPriority @default(MEDIUM)
   status      TicketStatus @default(NEW)
   comments    Comment[]
+  rate        Rate  @default(card5)
 }
 
 model User {
@@ -63,8 +67,7 @@ model User {
   password  String
   comments  Comment[]
   role      Roles     @default(USER)
-  project   Project? @relation()
-  projectId Int?
+  project   Project[]
   files     File[]
   ticket    Ticket[]
 }
@@ -108,4 +111,17 @@ enum TicketStatus {
   RESOLVED
   REVIEWING
   CLOSED
+}
+
+enum Rate {
+  card1
+  card2
+  card3
+  card4
+  card5
+  card6
+  card7
+  card8
+  card9
+  card10
 }

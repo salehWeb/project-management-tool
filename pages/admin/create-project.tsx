@@ -7,8 +7,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
-import { FormEvent, useState } from 'react'
+import { FormEvent, useCallback, useEffect, useState } from 'react'
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
+import { createProject, getProjectMangers } from '../../api';
+import Swal from 'sweetalert2';
 
 
 interface IProjectManger {
@@ -17,24 +19,6 @@ interface IProjectManger {
   lastName: string;
 }
 
-const data: IProjectManger[] = [
-  {
-    id: 1,
-    firstName: "hohn",
-    lastName: "max"
-  },
-  {
-    id: 2,
-    firstName: "jon",
-    lastName: "sewg"
-  },
-  {
-    id: 3,
-    firstName: "fargy",
-    lastName: "exved"
-  },
-]
-
 const CreateProject = () => {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
@@ -42,11 +26,21 @@ const CreateProject = () => {
   const [projectManger, setProjectManger] = useState<IProjectManger | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  const init = useCallback(async () => {
+    await getProjectMangers().then((res) => { setProjectsMangers(res.data.users) }).catch((err) => { console.log(err) })
+  }, [])
+
+  useEffect(() => {
+    init()
+  }, [init])
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-
-
+    if (!projectManger?.id || title.length < 8 || description.length < 20) return Swal.fire("unValid information", "", 'error')
+    await createProject({ projectMangerId: projectManger?.id, title, description })
+    .then((res) => { Swal.fire("Success", res.data.massage, 'success') })
+    .catch((err) => { Swal.fire("Some Thing Went Wrong !", err.response.data.massage, 'error') });
     setIsLoading(false)
   }
 
@@ -64,7 +58,7 @@ const CreateProject = () => {
           </Typography>
         </Box>
 
-        <Box component="form" onSubmit={handleSubmit} className="mt-2">
+        <Box component="form" onSubmit={(event) => handleSubmit(event)} className="mt-2">
 
           <Box className="w-full flex-1 flex-row gap-4 justify-center items-center flex mb-6">
             <TextField
@@ -87,10 +81,9 @@ const CreateProject = () => {
               className="my-0"
               disablePortal
               id="combo-box-demo"
-              options={data}
+              options={projectsMangers}
               fullWidth
               value={projectManger}
-
               onChange={(event, value) => setProjectManger(value)}
               getOptionLabel={(item) => item.firstName + " " + item.lastName}
               renderInput={(params) => (

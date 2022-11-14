@@ -4,7 +4,7 @@ export interface IUser {
     email: string;
     firstName: string
     lastName: string
-    role: "USER" | "ADMIN"
+    role: 'PROJECT_MANAGER' | 'USER' | 'DEVELOPER' | 'ADMIN';
     token: string;
 }
 
@@ -18,4 +18,9 @@ export interface ISingUp {
     firstName: string
     lastName: string
     email: string
+}
+
+export interface IMangeUsersRoles {
+    role: 'PROJECT_MANAGER' | 'USER' | 'DEVELOPER';
+    usersIds: number[];
 }
