@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { IUpdateProfileGeneralInformation } from '../types/profile';
 import { ICreateProject } from '../types/project';
-import { ILogin, IMangeUsersRoles, ISingUp, IUser } from '../types/user'
+import { IChangePassword, ILogin, IMangeUsersRoles, ISingUp, IUser } from '../types/user'
 
 let baseURL = 'http://localhost:3000/api'
 let ISSERVER = typeof window === "undefined";
@@ -36,3 +37,16 @@ export const getProjectMangers = async () => await API.get("/user/?only-project-
 export const createProject = async (data: ICreateProject) => await API.post("/project", data);
 
 export const mangeUsersIds = async (data: IMangeUsersRoles) => await API.patch("/user", data);
+
+export const ChangePassword = async (data: IChangePassword) => await API.patch("/auth/change-password", data)
+
+export const getProfileData = async () => await API.get("/profile")
+
+export const updateProfile = async (data: IUpdateProfileGeneralInformation) => await API.patch("/profile", data)
+
+export const uploadFile = async (files: File[]) => {
+    let formData = new FormData();
+    for (let i = 0; i < files.length; i++) { formData.set(`file${i}`, files[i]) }
+    await API.postForm("/upload", formData)
+}
+

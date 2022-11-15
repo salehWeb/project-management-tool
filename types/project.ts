@@ -3,3 +3,8 @@ export interface ICreateProject {
     title: string;
     description: string;
 }
+
+export interface IProject {
+    title: string;
+    description: string;
+}

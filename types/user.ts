@@ -24,3 +24,8 @@ export interface IMangeUsersRoles {
     role: 'PROJECT_MANAGER' | 'USER' | 'DEVELOPER';
     usersIds: number[];
 }
+
+export interface IChangePassword {
+    currentPassword: string; 
+    newPassword: string;
+}

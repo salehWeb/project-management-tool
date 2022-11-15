@@ -27,6 +27,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: 240,
@@ -120,8 +121,8 @@ export default function Main({ children }: any) {
                 <MenuIcon />
               </IconButton>
 
-              <Link href="/" className='ml-4'>
-                <Image src='/images/logo.svg' width={40} height={30} alt="logo bug"></Image>
+              <Link href="/" className='ml-4 flex w-[40px] h-[40px]'>
+                <Image src='/images/logo.svg' width={40} height={40} className='w-auto' alt="logo bug"></Image>
               </Link>
             </Box>
             <Box className="flex flex-row items-center">
@@ -215,7 +216,26 @@ export default function Main({ children }: any) {
           </List>
           <Divider />
           <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
+
+          <ListItem disablePadding className='block'>
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
+                  }}
+                >
+                  <Link href='/profile'>
+                  <ListItemIcon
+                    className={`min-w-[0] mr-${open ? '["3px"]' : "auto"} justify-center`} >
+                      <AccountBoxIcon />
+                  </ListItemIcon>
+                  </Link>
+                  <ListItemText primary='Profile' sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+
+            {['Trash', 'Spam'].map((text, index) => (
               <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                 <ListItemButton
                   sx={{

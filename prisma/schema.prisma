@@ -19,11 +19,11 @@ model File {
   id        Int      @id @default(autoincrement())
   fileUrl   String   @unique
   name      String 
-  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-  ticketId  Int
+  ticket    Ticket?   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  ticketId  Int?
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
+  user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int?
   type      FileType @default(IMAGE)
 }
 
@@ -59,17 +59,20 @@ model Ticket {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  createdAt DateTime  @default(now())
-  lastName  String
-  firstName String
-  password  String
-  comments  Comment[]
-  role      Roles     @default(USER)
-  project   Project[]
-  files     File[]
-  ticket    Ticket[]
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  createdAt   DateTime  @default(now())
+  lastName    String
+  firstName   String
+  password    String
+  comments    Comment[]
+  role        Roles     @default(USER)
+  project     Project[]
+  files       File[]
+  ticket      Ticket[]
+  avatar      String?
+  about       String?
+  title       String?
 }
 
 model Comment {
