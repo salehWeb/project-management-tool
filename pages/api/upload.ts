@@ -1,6 +1,8 @@
 import formidable from "formidable";
 import fs from "fs";
 import { NextApiRequest, NextApiResponse } from "next";
+import prisma from "../../libs/prisma";
+import { GetUserIdMiddleware } from "../../middleware";
 
 export const config = {
     api: {
@@ -27,26 +29,40 @@ const ProcessFiles = (Files: any): IFileStream[] => {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
+        const { error, id } = GetUserIdMiddleware(req);
+        if (error) return res.status(400).json({ massage: error })
+        if (!id) return res.status(404).json({ massage: "User not found" });
+
         const form = new formidable.IncomingForm();
 
         form.parse(req, async function (err, fields, files) {
+
             const filesArray = ProcessFiles(files)
 
-            if (filesArray.length === 0) return
-            res.status(401).json({ massages: "No File Found" });
+            if (filesArray.length === 0) return res.status(401).json({ massages: "No File Found" });
+
+            if (filesArray.length > 1) return res.status(401).json({ massage: "Multiple files Not Allowed" });
+
+            const data = fs.readFileSync(filesArray[0].filepath);
+
+            const name = `${Date.now().toString() + filesArray[0].originalFilename}`;
+
+            const isFound = await prisma.user.findUnique({ where: { id: id }, select: { avatar: true } });
+
+            if (isFound?.avatar) fs.unlinkSync(`./public/uploads/${isFound?.avatar}`);
 
             // create 'uploads' folder if not exist
             fs.mkdirSync("./public/uploads", { recursive: true });
 
-            for (let file of filesArray) {
-                const data = fs.readFileSync(file.filepath);
-                fs.writeFileSync(`./public/uploads/${Date.now().toString() +
-                    file.originalFilename}`, data);
-                fs.unlinkSync(file.filepath);
-            }
+            fs.writeFileSync(`./public/uploads/${name}`, data);
 
+            fs.unlinkSync(filesArray[0].filepath);
+
+            await prisma.user.update({ where: { id: id }, data: { avatar: name } });
+
+
+            return res.status(200).json({ massage: "Success uploading avatar", name });
         });
 
-        return res.status(200).json({ massage: "Success" });
     }
 };

@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import BackupIcon from '@mui/icons-material/Backup';
 import TextField from '@mui/material/TextField';
 import Swal from 'sweetalert2';
-import { ChangePassword, getProfileData, updateProfile } from '../../api';
+import { ChangePassword, getProfileData, updateProfile, uploadFile } from '../../api';
 import { IUserProfileData } from '../../types/profile';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
 
@@ -20,10 +20,10 @@ const Profile = () => {
     const [email, setEmail] = useState("")
     const [currentPassword, setCurrentPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
-    const [previewUrl, setPreviewUrl] = useState("")
 
     const [isLoadingChangePassword, setIsLoadingChangePassword] = useState(false)
     const [isLoadingChangeProfileInfo, setIsLoadingChangeProfileInfo] = useState(false)
+    const [isLoadingUploadAvatar, setIsLoadingUploadAvatar] = useState(false)
 
 
     // use createdAt, role
@@ -71,11 +71,18 @@ const Profile = () => {
     }
 
     const handelUploadAvatar = async (event: ChangeEvent<HTMLInputElement>) => {
-        const file = event.target?.files && event.target.files[0]
-        if (!file) return Swal.fire('No File Selected', '', 'question');;
-        if (file.size > 52428800) return Swal.fire('some think want wrong', 'file size is to big', 'error');
+        const files = event.target.files as unknown as File[];
+        if (files === null || !files.length) return Swal.fire('No File Selected', '', 'question');
+        if (files.length > 1) return Swal.fire('Multiple Files Not Allowed', '', 'error');
+        if (files[0].size > 52428800) return Swal.fire('some think want wrong', 'file size is to big', 'error');
 
-        setPreviewUrl(URL.createObjectURL(file))
+        setIsLoadingUploadAvatar(true);
+
+        await uploadFile(files)
+            .then((res) => { setUserImage(res.data.name) })
+            .catch((err) => { Swal.fire("Some Thing happened wrong !", err.response.data.massage, 'error') });
+
+        setIsLoadingUploadAvatar(false)
     }
 
     return (
@@ -86,33 +93,31 @@ const Profile = () => {
 
                     <div className='flex justify-start lg:w-full col-span-3 row-span-2 bg-white rounded-md shadow-md p-6'>
                         <div>
-                            {previewUrl || userImage ? (
+
+                            <div className='max-w-[120px] max-h-[100px] mb-6'>
                                 <Image
                                     className='rounded-md w-auto'
-                                    loader={() => myLoader(previewUrl || userImage)}
+                                    loader={() => myLoader(userImage ? `/uploads/${userImage}` : '/images/user-placeholder.png')}
                                     src={"me.png"}
                                     alt="Picture of the author"
                                     width={120}
                                     height={100}
                                 />
-                            ) : (
-                                <Image
-                                    className='rounded-md w-auto'
-                                    src='/images/user-placeholder.png'
-                                    alt="user-placeholder"
-                                    width={120}
-                                    height={100}
-                                />
-                            )}
+                            </div>
 
-                            <h1 className='text-2xl text-gray-800 font-bold'>{firstName + " " + lastName}</h1>
-                            {title && (
-                                <h2 className='text-gray-600'>{title}</h2>
-                            )}
-                            <Button size='small' startIcon={<BackupIcon />} className="text-sm mt-4 lowercase" variant="contained" component="label">
-                                {userImage ? "Change picture" : "Upload picture"}
-                                <input onChange={(event) => handelUploadAvatar(event)} hidden accept="image/*" type="file" />
-                            </Button>
+                            <div className='mt-2'>
+                                <h1 className='text-2xl text-gray-800 font-bold'>{firstName + " " + lastName}</h1>
+                                {title && ( <h2 className='text-gray-600'>{title}</h2> )}
+
+                                {isLoadingUploadAvatar ? (
+                                    <CircularProgress />
+                                ) : (
+                                    <Button size='small' startIcon={<BackupIcon />} className="text-sm mt-4 lowercase" variant="contained" component="label">
+                                        {userImage ? "Change picture" : "Upload picture"}
+                                        <input onChange={(event) => handelUploadAvatar(event)} hidden accept="image/*" type="file" />
+                                    </Button>
+                                )}
+                            </div>
                         </div>
                     </div>
 
@@ -132,7 +137,7 @@ const Profile = () => {
 
                             <TextField value={email} onChange={(event) => setEmail(event.target.value)} id="Email" name="Email" label="Email" variant="outlined" type="email" />
                         </div>
-                        <div className="flex w-full items-start">
+                        <div className="flex w-full justify-center items-start">
                             {isLoadingChangeProfileInfo ? (
                                 <CircularProgress />
                             ) : (

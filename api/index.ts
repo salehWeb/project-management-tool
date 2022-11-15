@@ -47,5 +47,5 @@ export const updateProfile = async (data: IUpdateProfileGeneralInformation) => a
 export const uploadFile = async (files: File[]) => {
     let formData = new FormData();
     for (let i = 0; i < files.length; i++) { formData.set(`file${i}`, files[i]) }
-    await API.postForm("/upload", formData)
+    return await API.postForm("/upload", formData)
 }
