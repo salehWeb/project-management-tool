@@ -21,21 +21,25 @@ const Profile = () => {
     const [currentPassword, setCurrentPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
     const [previewUrl, setPreviewUrl] = useState("")
-    const [profile, setProfile] = useState<IUserProfileData | null>(null)
 
     const [isLoadingChangePassword, setIsLoadingChangePassword] = useState(false)
+    const [isLoadingChangeProfileInfo, setIsLoadingChangeProfileInfo] = useState(false)
 
+
+    // use createdAt, role
     const init = useCallback(async () => {
         await getProfileData()
-            .then((data) => { setProfile(data.data.user) })
-            .catch((err) => { Swal.fire("Some Thing Went Wrong !", err.response.data.massage, 'error') });
+            .then((res) => {
+                if (!res.data.userProfile) return;
 
-        setUserImage("");
-        setAbout("hello World");
-        setTitle("hello World");
-        setFirstName("hello World");
-        setLastName("hello World")
-        setEmail("hello World")
+                setUserImage(res.data.userProfile?.avatar || "");
+                setAbout(res.data.userProfile?.about || "");
+                setTitle(res.data.userProfile?.title || "");
+                setFirstName(res.data.userProfile.firstName);
+                setLastName(res.data.userProfile.lastName);
+                setEmail(res.data.userProfile.email);
+            })
+            .catch((err) => { Swal.fire("Some Thing Went Wrong !", err.response.data.massage, 'error') });
     }, [])
 
     useEffect(() => {
@@ -45,20 +49,25 @@ const Profile = () => {
 
     const HandelUpdateProfileGeneralInformation = async () => {
 
+        setIsLoadingChangeProfileInfo(true)
         await updateProfile({ firstName, lastName, email, title, about })
-            .then((data: any) => { }).catch((err: any) => { });
+            .then((res) => { console.log(res) })
+            .catch((err) => { console.log(err) });
+
+        init()
+        setIsLoadingChangeProfileInfo(false)
     }
 
     const HandelChangePassword = async () => {
         if (!currentPassword || !newPassword) return Swal.fire("You must enter a new password", "", "error");
-        setIsLoadingChangePassword(true);    
+        setIsLoadingChangePassword(true);
         await ChangePassword({ currentPassword, newPassword })
-                .then((res) => { Swal.fire("Password Changed", res.data.massage, 'success') })
-                .catch((err) => { Swal.fire("Some Thing happened wrong !", err.response.data.massage, 'error') });
-            
-                setIsLoadingChangePassword(false);
-                setCurrentPassword("")
-                setNewPassword("")
+            .then((res) => { Swal.fire("Password Changed", res.data.massage, 'success') })
+            .catch((err) => { Swal.fire("Some Thing happened wrong !", err.response.data.massage, 'error') });
+
+        setIsLoadingChangePassword(false);
+        setCurrentPassword("");
+        setNewPassword("");
     }
 
     const handelUploadAvatar = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -71,9 +80,7 @@ const Profile = () => {
 
     return (
         <div className='max-w-[100vw] min-h-[100vh]'>
-
             <div className="m-4">
-
                 <h1 className='text-3xl text-gray-800 font-bold mb-4'>User settings</h1>
                 <div className=' gap-6 grid-flow-dense grid-cols-10 flex-wrap flex flex-col grid-rows-6 lg:grid'>
 
@@ -126,7 +133,11 @@ const Profile = () => {
                             <TextField value={email} onChange={(event) => setEmail(event.target.value)} id="Email" name="Email" label="Email" variant="outlined" type="email" />
                         </div>
                         <div className="flex w-full items-start">
-                            <Button onClick={HandelUpdateProfileGeneralInformation} size="small" className='w-fit mt-2 bg-blue-600 text-white' variant='contained'>Save</Button>
+                            {isLoadingChangeProfileInfo ? (
+                                <CircularProgress />
+                            ) : (
+                                <Button onClick={HandelUpdateProfileGeneralInformation} size="small" className='w-fit mt-2 bg-blue-600 text-white' variant='contained'>Save</Button>
+                            )}
                         </div>
                     </div>
 
@@ -140,14 +151,19 @@ const Profile = () => {
                         </div>
 
                         <div className="flex w-full items-start justify-center mt-4">
-                            <Button onClick={HandelChangePassword} size="small" className='w-fit bg-blue-600 text-white' variant='contained'>
-                                Change Password
-                            </Button>
+
+                            {isLoadingChangePassword ? (
+                                <CircularProgress />
+                            ) : (
+                                <Button onClick={HandelChangePassword} size="small" className='w-fit bg-blue-600 text-white' variant='contained'>
+                                    Change Password
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

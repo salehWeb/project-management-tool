@@ -49,4 +49,3 @@ export const uploadFile = async (files: File[]) => {
     for (let i = 0; i < files.length; i++) { formData.set(`file${i}`, files[i]) }
     await API.postForm("/upload", formData)
 }
-
