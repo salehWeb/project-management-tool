@@ -1,13 +1,15 @@
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react'
-import Link from 'next/link'
 import Image from 'next/image'
 import Button from '@mui/material/Button';
 import BackupIcon from '@mui/icons-material/Backup';
 import TextField from '@mui/material/TextField';
 import Swal from 'sweetalert2';
 import { ChangePassword, getProfileData, updateProfile, uploadFile } from '../../api';
-import { IUserProfileData } from '../../types/profile';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import moment from 'moment';
 
 const myLoader = (url: string) => url;
 
@@ -24,9 +26,9 @@ const Profile = () => {
     const [isLoadingChangePassword, setIsLoadingChangePassword] = useState(false)
     const [isLoadingChangeProfileInfo, setIsLoadingChangeProfileInfo] = useState(false)
     const [isLoadingUploadAvatar, setIsLoadingUploadAvatar] = useState(false)
+    const [role, setRole] = useState("USER")
+    const [JoinedAt, setJoinedAt] = useState(null)
 
-
-    // use createdAt, role
     const init = useCallback(async () => {
         await getProfileData()
             .then((res) => {
@@ -38,6 +40,8 @@ const Profile = () => {
                 setFirstName(res.data.userProfile.firstName);
                 setLastName(res.data.userProfile.lastName);
                 setEmail(res.data.userProfile.email);
+                setRole(res.data.userProfile.role || "USER")
+                setJoinedAt(res.data.userProfile.createdAt || null)
             })
             .catch((err) => { Swal.fire("Some Thing Went Wrong !", err.response.data.massage, 'error') });
     }, [])
@@ -86,40 +90,58 @@ const Profile = () => {
     }
 
     return (
-        <div className='max-w-[100vw] min-h-[100vh]'>
+        <Container className='max-w-[100vw] my-10 min-h-[100vh]'>
             <div className="m-4">
                 <h1 className='text-3xl text-gray-800 font-bold mb-4'>User settings</h1>
-                <div className=' gap-6 grid-flow-dense grid-cols-10 flex-wrap flex flex-col grid-rows-6 lg:grid'>
+                <div className=' gap-6 grid-flow-dense grid-cols-6 flex-wrap flex flex-col grid-rows-4 lg:grid'>
 
-                    <div className='flex justify-start lg:w-full col-span-3 row-span-2 bg-white rounded-md shadow-md p-6'>
-                        <div>
+                    <div className='flex justify-center items-center col-span-6 row-span-2'>
+                        <Box className="flex-row gap-5 flex shadow-md p-8 items-center justify-evenly rounded-md bg-white ">
 
-                            <div className='max-w-[120px] max-h-[100px] mb-6'>
-                                <Image
-                                    className='rounded-md w-auto'
-                                    loader={() => myLoader(userImage ? `/uploads/${userImage}` : '/images/user-placeholder.png')}
-                                    src={"me.png"}
-                                    alt="Picture of the author"
-                                    width={120}
-                                    height={100}
-                                />
-                            </div>
+                            <Box>
+                                <div className='max-w-[120px] max-h-[100px] mb-6'>
+                                    <Image
+                                        className='rounded-md w-auto'
+                                        loader={() => myLoader(userImage ? `/uploads/${userImage}` : '/images/user-placeholder.png')}
+                                        src={"me.png"}
+                                        alt="Picture of the author"
+                                        width={120}
+                                        height={100}
+                                    />
+                                </div>
 
-                            <div className='mt-2'>
-                                <h1 className='text-2xl text-gray-800 font-bold'>{firstName + " " + lastName}</h1>
-                                {title && ( <h2 className='text-gray-600'>{title}</h2> )}
+                                <div className='mt-2'>
+                                    <h1 className='text-2xl text-gray-800 font-bold'>{firstName + " " + lastName}</h1>
+                                    {title && (<h2 className='text-gray-600'>{title}</h2>)}
 
-                                {isLoadingUploadAvatar ? (
-                                    <CircularProgress />
-                                ) : (
-                                    <Button size='small' startIcon={<BackupIcon />} className="text-sm mt-4 lowercase" variant="contained" component="label">
-                                        {userImage ? "Change picture" : "Upload picture"}
-                                        <input onChange={(event) => handelUploadAvatar(event)} hidden accept="image/*" type="file" />
-                                    </Button>
-                                )}
-                            </div>
-                        </div>
+                                    {isLoadingUploadAvatar ? (
+                                        <CircularProgress />
+                                    ) : (
+                                        <Button size='small' startIcon={<BackupIcon />} className="text-sm mt-4 lowercase" variant="contained" component="label">
+                                            {userImage ? "Change picture" : "Upload picture"}
+                                            <input onChange={(event) => handelUploadAvatar(event)} hidden accept="image/*" type="file" />
+                                        </Button>
+                                    )}
+                                </div>
+                            </Box>
+
+                            <Box>
+                                <div className='text-center mb-6'>
+                                    <Typography variant="h5" component='h5'>
+                                        Role: <strong>{role}</strong>
+                                    </Typography>
+                                </div>
+
+                                <div className='mt-2'>
+                                    <Typography variant="subtitle1" component='p'>
+                                        Joined At:  <time>{moment(JoinedAt).format("ll")}</time>
+                                    </Typography>
+                                </div>
+                            </Box>
+
+                        </Box>
                     </div>
+
 
                     <div className="flex col-span-7 lg:w-full row-span-4 flex-col justify-center  bg-white rounded-md shadow-md p-6">
                         <h1 className='text-xl text-start text-gray-800 font-bold mb-4'>General information</h1>
@@ -168,7 +190,7 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
-        </div >
+        </Container>
     )
 }
 
