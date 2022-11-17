@@ -11,20 +11,17 @@ model Tag {
   id      Int       @id @default(autoincrement())
   name    String    @unique
   ticket Ticket[]
-  color  String
-  isDark Boolean 
 }
 
 model File {
   id        Int      @id @default(autoincrement())
-  fileUrl   String   @unique
-  name      String 
-  ticket    Ticket?   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  name      String   @unique
+  ticket    Ticket?  @relation(fields: [ticketId], references: [id], onDelete: Cascade)
   ticketId  Int?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int?
-  type      FileType @default(IMAGE)
+  type      FileType  @default(IMAGE)
 }
 
 model Project {
@@ -38,6 +35,7 @@ model Project {
   tickets         Ticket[]
   isClosed        Boolean  @default(false)
 }
+
 
 model Ticket {
   id          Int    @id @default(autoincrement())
@@ -66,7 +64,7 @@ model User {
   firstName   String
   password    String
   comments    Comment[]
-  role        Roles     @default(USER)
+  role        Roles     @default(DEVELOPER)
   project     Project[]
   files       File[]
   ticket      Ticket[]
@@ -89,7 +87,6 @@ enum Roles {
   ADMIN
   PROJECT_MANAGER
   DEVELOPER
-  USER
 }
 
 enum TicketTypes {

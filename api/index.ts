@@ -32,6 +32,8 @@ export const GetToken = async () => await API.get("/auth/refresh-token");
 
 export const getUsers = async () => await API.get("/user");
 
+export const getAssignTo = async () => await API.get("/user/?get-assign-to=true");
+
 export const getProjectMangers = async () => await API.get("/user/?only-project-manger=true");
 
 export const createProject = async (data: ICreateProject) => await API.post("/project", data);
@@ -49,3 +51,5 @@ export const uploadFile = async (files: File[]) => {
     for (let i = 0; i < files.length; i++) { formData.set(`file${i}`, files[i]) }
     return await API.postForm("/upload", formData)
 }
+
+export const getTagsOptions = async () => await API.get("/tags");

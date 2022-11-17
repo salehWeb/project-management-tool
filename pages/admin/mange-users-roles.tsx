@@ -46,7 +46,7 @@ const MangeUsersRoles = () => {
     event.preventDefault();
     setIsLoading(true);
 
-    if (usersIds.length === 0 || !(role === "PROJECT_MANAGER" || role === "USER" || role === "DEVELOPER"))
+    if (usersIds.length === 0 || !(role === "PROJECT_MANAGER" || role === "DEVELOPER"))
       return Swal.fire("unValid Data", "", "error");
 
     await mangeUsersIds({ role, usersIds })

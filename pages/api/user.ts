@@ -7,6 +7,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'GET') {
         const onlyProjectMangers = req.query["only-project-manger"];
+        const getAssignTo = req.query["get-assign-to"];
+
 
         if (onlyProjectMangers) {
 
@@ -23,7 +25,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             return res.status(200).json({ users });
 
-        } else {
+        } else if (getAssignTo) {
+            const users = await prisma.user.findMany({
+                where: {
+                    NOT: [{role: "USER"}]
+                },
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    role: true,
+                }
+            });
+
+            return res.status(200).json({ users });
+        }  else {
 
             const users = await prisma.user.findMany({
                 where: {
