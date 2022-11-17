@@ -17,13 +17,13 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { getUsers, mangeUsersIds } from '../../api';
 import Swal from 'sweetalert2';
 
-const ROLES = ["PROJECT_MANAGER", "DEVELOPER", "USER"];
+const ROLES = ["PROJECT_MANAGER", "DEVELOPER"];
 
 interface IUserOption {
   id: number;
   firstName: string;
   lastName: string;
-  role: "PROJECT_MANAGER" | "DEVELOPER" | "USER";
+  role: "PROJECT_MANAGER" | "DEVELOPER";
 }
 
 const MangeUsersRoles = () => {

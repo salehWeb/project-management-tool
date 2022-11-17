@@ -9,7 +9,7 @@ interface IGetUserIdMiddleware {
 interface IGetUserIdAndRoleMiddleware {
     error: any | null
     id: number | null
-    role: "ADMIN" | "USER" | null;
+    role: 'PROJECT_MANAGER' | 'DEVELOPER' | 'ADMIN' | null;
 }
 
 

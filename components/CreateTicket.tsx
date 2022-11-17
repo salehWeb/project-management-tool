@@ -7,12 +7,14 @@ import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import React, { useState, useCallback, useEffect, FormEvent } from 'react'
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import { getAssignTo, getTagsOptions } from '../api';
-import { IRate, ITag, ITicketPriority, ITicketTypes } from '../types/ticket';
+import { createTicket, getAssignTo, getTagsOptions } from '../api';
+import { ICreateTicket, IRate, ITicketPriority, ITicketTypes } from '../types/ticket';
 import { FormControl, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
+import { useRouter } from 'next/router';
+import Toast from '../functions/sweetAlert'
 
 const typeOptions: string[] = ["FEATURE", "BUG"]
 const priorityOptions: string[] = ["LOW", "MEDIUM", "HIGH"]
@@ -35,25 +37,24 @@ const CreateTicket = () => {
     const [developer, setDeveloper] = useState<IAssignedTo | null>(null)
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-
     const [isLoading, setIsLoading] = useState(false)
-
     const [type, setType] = useState<ITicketTypes>("BUG");
     const [priority, setPriority] = useState<ITicketPriority>("MEDIUM");
     const [rate, setRate] = useState<IRate>("card5");
-
     const [tagsOptions, setTagsOptions] = useState<IOptions[]>([])
     const [tags, setTags] = useState<string[]>([])
+
+    const router = useRouter()
 
     const init = useCallback(async () => {
         await getAssignTo()
             .then((res) => { setDevelopers(res.data.users) })
-            .catch((err) => { console.error(err) });
+            .catch((err) => { console.log(err) });
 
         await getTagsOptions()
             .then((res) => { setTagsOptions(res.data.tags) })
-            .catch((err) => { console.error(err) });
-        
+            .catch((err) => { console.log(err) });
+
     }, [])
 
     useEffect(() => {
@@ -62,9 +63,34 @@ const CreateTicket = () => {
 
     const handelSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setIsLoading(true)
+        setIsLoading(true);
 
+        if (typeof developer?.id !== 'number') return;
 
+        const data: ICreateTicket = {
+            title,
+            description,
+            developerId: developer.id,
+            rate,
+            type,
+            priority,
+            tags
+        }
+
+        await createTicket(data, Number(router.query.id))
+            .then((res) => { 
+                Toast.fire("Success Creating Ticket", res.data.massage, 'success') 
+                console.log(res)
+             })
+            .catch((err) => { 
+                Toast.fire("Some Thing Want Wrong!", err.response.data.massage, 'error') 
+                console.log(err) 
+            });
+
+        setTitle("")
+        setDescription("")
+        setTags([])
+        setDeveloper(null)
         setIsLoading(false)
     }
 
@@ -134,8 +160,9 @@ const CreateTicket = () => {
                         <TextField
                             {...params}
                             label="tags"
-                            helperText={tags.length < 1 && "at last Insert One Tag"}
-                            error={tags.length < 1}
+                            disabled={tags.length > 4}
+                            helperText={tags.length < 2 && "at last Insert Two Tags"}
+                            error={tags.length < 2}
                             placeholder="tag"
                         />
                     )}

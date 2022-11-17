@@ -13,15 +13,12 @@ export type IRate = "card1" | "card2" | "card3" | "card4" | "card5" | "card6" | 
 
 export interface ITag {
     name: string;
-    color: string;
-    isDark: boolean;
 }
 
 export interface ICreateTicket {
     title: string
     description: string
-    tags: ITag[]
-    files: File[]
+    tags: string[]
     developerId: number;
     type: ITicketTypes;
     priority: ITicketPriority;

@@ -48,7 +48,7 @@ model Ticket {
   developer   User   @relation(fields: [developerId], references: [id], onDelete: Cascade)
   developerId Int 
   createdAt   DateTime @default(now())
-  completedAt DateTime
+  completedAt DateTime?
   type        TicketTypes @default(FEATURE)
   priority    TicketPriority @default(MEDIUM)
   status      TicketStatus @default(NEW)

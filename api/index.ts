@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { IUpdateProfileGeneralInformation } from '../types/profile';
 import { ICreateProject } from '../types/project';
+import { ICreateTicket } from '../types/ticket';
 import { IChangePassword, ILogin, IMangeUsersRoles, ISingUp, IUser } from '../types/user'
 
 let baseURL = 'http://localhost:3000/api'
@@ -53,3 +54,5 @@ export const uploadFile = async (files: File[]) => {
 }
 
 export const getTagsOptions = async () => await API.get("/tags");
+
+export const createTicket = async (data: ICreateTicket, projectId: number) => await API.post(`/ticket/?projectId=${projectId}`, data)

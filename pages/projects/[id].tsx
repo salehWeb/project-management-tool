@@ -70,8 +70,6 @@ export async function getStaticProps({ params }: IPath) {
           tags: {
             select: {
               name: true,
-              color: true,
-              isDark: true,
             },
           },
           files: {

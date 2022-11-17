@@ -27,9 +27,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         } else if (getAssignTo) {
             const users = await prisma.user.findMany({
-                where: {
-                    NOT: [{role: "USER"}]
-                },
                 select: {
                     id: true,
                     firstName: true,
@@ -76,7 +73,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const data: IMangeUsersRoles = req.body;
         
-        if (!(data.role === "PROJECT_MANAGER" || data.role === "USER" || data.role === "DEVELOPER"))  
+        if (!(data.role === "PROJECT_MANAGER" || data.role === "DEVELOPER"))  
         return res.status(403).json({massage: "unValid role type" });
 
         if (data?.usersIds.length === 0) return res.status(404).json({massage: "Users not found"})
