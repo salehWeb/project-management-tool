@@ -56,3 +56,8 @@ export const uploadFile = async (files: File[]) => {
 export const getTagsOptions = async () => await API.get("/tags");
 
 export const createTicket = async (data: ICreateTicket, projectId: number) => await API.post(`/ticket/?projectId=${projectId}`, data)
+
+export const getTicketsForProjectPage =
+async (projectId: number, skip: number, take: number) => await API.get(`/ticket/?projectId=${projectId}&skip=${skip}&take=${take}`)
+
+export const getTicketsLengthForProjectPage = async (projectId: number) => await API.get(`/ticket/?projectId=${projectId}&get-length=true`)
