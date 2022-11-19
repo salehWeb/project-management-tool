@@ -1,12 +1,12 @@
 import jwt  from 'jsonwebtoken';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { GetUserIdMiddleware } from '../../../middleware';
+import { GetUserIdMiddlewareFromCookie } from '../../../middleware';
 import prisma from '../../../libs/prisma';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (req.method === "GET") {
-        const {error, id} = GetUserIdMiddleware(req)
+        const {error, id} = GetUserIdMiddlewareFromCookie(req)
         if (error) return res.status(400).json({ massage: error });
         if (id === null) return res.status(400).json({ massage: "User Not Found" });
 

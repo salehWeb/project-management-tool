@@ -6,7 +6,6 @@ import Main from '../components/Main';
 import Swal from 'sweetalert2';
 import { GetToken } from "../api";
 import { useCallback, useEffect, useState, useMemo } from 'react'
-import useGetUser from "../hooks/useGetUser";
 import { useRouter } from 'next/router';
 import checkExpirationDateJwt from '../functions/checkExpirationDateJwt';
 import { IUser } from '../types/user';

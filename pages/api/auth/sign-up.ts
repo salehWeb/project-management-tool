@@ -9,7 +9,11 @@ import prisma from '../../../libs/prisma/index';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (req.method === "POST") {
-        const { password, email, firstName, lastName }: ISingUp = req.body
+        const { password, email, firstName, lastName }: ISingUp = req.body;
+
+        
+        if (!lastName || !password || !email || !firstName) return res.status(400).json({ massage: "InValid Data" });
+        if (!(password.length > 6) && ! (lastName.length > 3) && !(firstName.length > 3) && !(email.length > 8)) return res.status(400).json({ massage: 'unValid Fields' })
 
         const user = await prisma.user.findFirst({
             where: {
@@ -22,7 +26,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 
         try {
-            if (!(password.length > 6) && !(lastName.length > 3) && !(firstName.length > 3) && !(email.length > 8)) return res.status(400).json({ error: 'unValid Fields' })
 
             if (user?.email) return res.status(400).json({ error: "user already exist try login", user })
 
@@ -36,7 +39,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     lastName: lastName,
                     email: email,
                     password: hashPassword,
-                    role: isAdmin ? "ADMIN" : "USER"
+                    role: isAdmin ? "ADMIN" : "DEVELOPER"
                 }
             })
 

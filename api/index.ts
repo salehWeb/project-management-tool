@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === "production" && !ISSERVER) {
 const API = axios.create({ baseURL: baseURL })
 
 API.interceptors.request.use((req) => {
-    if (user && req?.headers?.authorization) req.headers.authorization = `Bearer ${user.token}`;
+    if (user && req.headers) req.headers.authorization = `Bearer ${user.token}`;
     return req
 })
 
