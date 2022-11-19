@@ -63,3 +63,20 @@ async (projectId: number, skip: number, take: number) => await API.get(`/ticket/
 export const getTicketsLengthForProjectPage = async (projectId: number) => await API.get(`/ticket/?projectId=${projectId}&get-length=true`)
 
 export const getTicketsTypesForProjectPage = async (projectId: number) => await API.get(`/ticket/?projectId=${projectId}&get-tickets-types=true`)
+
+export const getProjectsStatus = async () => await API.get("/projects/?get-projects-status=true") 
+
+export const getProjectsLength = async () => await API.get("/projects/?get-length=true");
+
+export const getMyTickets = async () => await API.get("/tickets")
+
+export const getMyProjects = async (skip: number, take: number) => await API.get(`/projects/?take=${take}&skip=${skip}`)
+
+
+
+
+
+
+
+
+

@@ -8,19 +8,10 @@ import Typography from '@mui/material/Typography';
 import CssBaseline from '@mui/material/CssBaseline';
 import { getTicketsTypesForProjectPage } from '../../../api';
 import Tickets from '../../../components/Tickets';
+import { IProject } from '../../../types/project';
 
-interface IProject {
-  createdAt: Date;
-  id: number;
-  description: string;
-  isClosed: boolean;
-  title: string;
-  projectManger: {
-    id: number;
-    firstName: string;
-    lastName: string;
-  };
-}
+
+
 
 interface IProjectPageProps {
   project: IProject

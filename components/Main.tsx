@@ -6,7 +6,6 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -28,6 +27,9 @@ import Image from 'next/image';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import BugReportIcon from '@mui/icons-material/BugReport';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: 240,
@@ -197,43 +199,62 @@ export default function Main({ children }: any) {
               </ListItemButton>
             </ListItem>
 
-            {['Send email', 'Drafts'].map((text, index) => (
-              <ListItem key={index} className="p-0 block" >
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }} >
+            <ListItem className="p-0 block" >
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }} >
+                <Link href='/projects/my-projects'>
                   <ListItemIcon
                     className={`min-w-[0] mr-${open ? '["3px"]' : "auto"} justify-center`} >
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                    <AccountTreeIcon />
                   </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+                </Link>
+                <ListItemText primary="My Projects" sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+
+
+            <ListItem className="p-0 block">
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }} >
+                <Link href='/tickets/my-tickets'>
+                  <ListItemIcon
+                    className={`min-w-[0] mr-${open ? '["3px"]' : "auto"} justify-center`} >
+                    <BugReportIcon />
+                  </ListItemIcon>
+                </Link>
+                <ListItemText primary="My Tickets" sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+
           </List>
           <Divider />
           <List>
 
-          <ListItem disablePadding className='block'>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                >
-                  <Link href='/profile'>
+            <ListItem disablePadding className='block'>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+              >
+                <Link href='/profile'>
                   <ListItemIcon
                     className={`min-w-[0] mr-${open ? '["3px"]' : "auto"} justify-center`} >
-                      <AccountBoxIcon />
+                    <AccountBoxIcon />
                   </ListItemIcon>
-                  </Link>
-                  <ListItemText primary='Profile' sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
+                </Link>
+                <ListItemText primary='Profile' sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
 
             {['Trash', 'Spam'].map((text, index) => (
               <ListItem key={text} disablePadding sx={{ display: 'block' }}>
