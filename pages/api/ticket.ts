@@ -112,6 +112,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(200).json({ length })
         }
 
+        if(req.query["get-tickets-types"]) {
+            const tickets = await prisma.ticket.findMany({ where: { projectId: projectId }, select: { type: true } });
+            return res.status(200).json({ tickets })
+        }
+
         const skip = Number(req.query["skip"]);
         const take = Number(req.query["take"]);
         

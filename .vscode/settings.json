@@ -1,5 +1,8 @@
 {
     "cSpell.words": [
         "Swal"
-    ]
+    ],
+    "jest.runAllTestsFirst": false,
+    "jest.autoEnable": false,
+    "jest.showCoverageOnLoad": false
 }
