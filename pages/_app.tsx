@@ -21,9 +21,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <NextNProgress />
       <TokenHandler />
       {isBrowser ? (
-        <div className="background">
+        <div className="bg-blue-50 overflow-x-hidden">
           <Main>
-            <main className="min-h-[100vh] flex justify-center items-center">
+            <main className="flex">
               <Component {...pageProps} />
             </main>
           </Main>
@@ -82,9 +82,13 @@ export function TokenHandler() {
     }
 
     const token = await getTokenHandler();
-    if (!token || !user) return;
-    let userData = user;
-    userData.token = token;
+    if (!token) return;
+    
+    if (!user) getUser();
+     
+    let userData = { id: user?.id, createdAt: user?.createdAt, email: user?.email,
+      firstName: user?.firstName, lastName: user?.lastName, role: user?.role, token };
+      
     localStorage.setItem("user", JSON.stringify(userData));
     getUser();
 
@@ -102,7 +106,7 @@ export function TokenHandler() {
       setIsExpired(checkExpirationDateJwt(user?.token as string));
       if (user && isExpired) await checkErrorAndGetToken()
 
-    }, 1000 * 60 * 2); // every 2 minutes
+    }, 1000 * 50); // every 50 Seconds
     return () => clearInterval(interval);
 
   }, [])
