@@ -10,25 +10,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (error) return res.status(400).json({error});
         if (!id) return res.status(404).json({massage: "user not found"});
 
-        const tickets = await prisma.ticket.findMany({
+        const tickets = await prisma.ticket.groupBy({
             where: {
                 developerId: id,
             },
-            select: {
-                id: true,
-                description: true,
-                createdAt: true,
-                title: true,
-                type: true,
-                priority: true,
-                status: true,
-                tags: {
-                    select: {
-                        name: true,
-                    },
-                },
-                rate: true,
-            }
+            by: ['status'],
+            
         });
 
         return res.status(200).json({tickets})

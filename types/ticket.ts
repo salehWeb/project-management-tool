@@ -25,4 +25,16 @@ export interface ICreateTicket {
     rate: IRate;
 }
 
-
+export interface IMyTicket {
+    createdAt: Date;
+    description: string;
+    id: number;
+    priority: ITicketPriority;
+    rate: IRate;
+    status: ITicketStatus;
+    tags: {
+        name: string;
+    }[];
+    title: string;
+    type: ITicketTypes;
+};

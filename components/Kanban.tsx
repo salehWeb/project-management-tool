@@ -5,6 +5,7 @@ import TaskCard from './TaskCard';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Box from '@mui/material/Box'
+import { IMyTicket } from '../types/ticket';
 
 interface IColumns {
     ToDo: {
@@ -56,7 +57,13 @@ interface IDropResult {
     }
 }
 
-const Kanban = () => {
+interface IKanbanProps {
+    tickets: IMyTicket[]
+};
+
+const Kanban = ({tickets}: IKanbanProps) => {
+
+    
     const [columns, setColumns] = useState<IColumns>(columnsFromBackend);
 
     const onDragEnd = (result: IDropResult) => {
